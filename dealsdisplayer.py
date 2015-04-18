@@ -1,6 +1,12 @@
+# Original Author: Sherman Cheung
+
 import praw
 import Tkinter
 import webbrowser
+
+# TODO
+# Add option to skip login and go straight to filter
+# Add option for choosing how many deals to display
 
 # Create the windows
 loginwindow = Tkinter.Tk()
