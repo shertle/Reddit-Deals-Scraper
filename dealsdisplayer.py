@@ -5,7 +5,6 @@ import Tkinter
 import webbrowser
 
 # TODO
-# Add option to skip login and go straight to filter
 # Add option for choosing how many deals to display
 
 # Create the windows
@@ -44,12 +43,23 @@ steamvar = Tkinter.IntVar()
 # The deal sites we want to search for
 search_terms = []
 
+# Have the user login by default
+skiplogin = False
+
 # Create Praw Object for parsing reddit
 r = praw.Reddit(user_agent="Game Deal Display v0.1")
 
+def nologin():
+    """Skip logging in and show filters"""
+    global skiplogin
+    skiplogin = True
+    loginwindow.withdraw()
+    filterwindow.deiconify()
 
 def showfilters():
     """Brings up the choices of filters"""
+    global skiplogin
+    skiplogin = False
     loginwindow.withdraw()
     filterwindow.deiconify()
 
@@ -91,7 +101,6 @@ def login():
     showfilters()
 
 
-
 def showdeals():
     """Display the deals selected by the user"""
     # Get the /r/GameDeals subreddit
@@ -121,15 +130,19 @@ def showdeals():
                     wraplength=500, justify="left")
             l.grid(row=row, column=0, sticky="w")
 
-            # Create the upvote button
-            up = lambda y=submission: y.upvote()
-            u = Tkinter.Button(displaywindow, text="Up Vote", command=up)
-            u.grid(row=row, column=1)
+            global skiplogin
 
-            # Create the downvote button
-            down = lambda z=submission: z.downvote()
-            d = Tkinter.Button(displaywindow, text="Down Vote", command=down)
-            d.grid(row=row, column=2)
+            if not skiplogin:
+                # Create the upvote button
+                up = lambda y=submission: y.upvote()
+                u = Tkinter.Button(displaywindow, text="Up Vote", command=up)
+                u.grid(row=row, column=1)
+
+                # Create the downvote button
+                down = lambda z=submission: z.downvote()
+                d = Tkinter.Button(
+                    displaywindow, text="Down Vote", command=down)
+                d.grid(row=row, column=2)
 
             row = row + 1
 
@@ -145,10 +158,14 @@ user_entry.grid(row=0, column=1)
 pass_entry = Tkinter.Entry(loginwindow, textvariable=password, show="*")
 pass_entry.grid(row=1, column=1)
 
-
 # Create the button to allow the user to login
 login_button = Tkinter.Button(loginwindow, text="Login", command=login)
 login_button.grid(row=2, column=0)
+
+# Create the button to skip user login
+skip_button = Tkinter.Button(
+    loginwindow, text="Continue without Login", command=nologin)
+skip_button.grid(row=2, column=1)
 
 # Create the go button
 go_button = Tkinter.Button(filterwindow, text="Go!", command=showdeals)
