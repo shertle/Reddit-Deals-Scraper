@@ -4,8 +4,11 @@ A python script that scrapes deals from Reddit.  Specifically, scrapes deals fro
 Utilizes Tkinter python library as well as PRAW Reddit API.
 
 To run, use the command:
-
 ````
 python dealsdisplayer.py
 ````
 
+PRAW can be installed using the command:
+````
+pip install praw
+````
